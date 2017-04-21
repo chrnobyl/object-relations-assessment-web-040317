@@ -3,9 +3,9 @@ class Review
 
   ALL = []
 
-  def initialize(content, name)
+  def initialize(content, customer, restaurant)
     @content = content
-    @customer = Customer.new(name)
+    @customer = customer
     @restaurant = restaurant
     ALL << self
   end
@@ -13,16 +13,4 @@ class Review
   def self.all
     ALL
   end
-
-  def customer
-    @customer
-  end
-
-  def restaurant
-    @restaurant
-  end
-
-
-
-
 end

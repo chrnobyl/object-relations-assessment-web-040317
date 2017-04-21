@@ -3,13 +3,13 @@ class Customer
   attr_accessor :first_name, :last_name
 
   ALL = []
+  ALL_NAMES = []
 
   def initialize(first_name, last_name)
     @first_name = first_name
     @last_name  = last_name
-    @names = []
-    @names << first_name + " " last_name
     ALL << self
+    ALL_NAMES << self.full_name
   end
 
   def full_name
@@ -21,42 +21,27 @@ class Customer
   end
 
   def self.find_by_name(name)
-    arr = []
-    name.split(" ")
-    self.all.each do |k, v|
-      if k == @first_name && v == name[0]
-        arr << v
-      end
-      if k == @last_name && v == name[1]
-        arr << v
-      end
+    self.all.find do |customer|
+      customer.full_name == name
     end
-      return arr.join
   end
 
   def self.find_all_by_first_name(name)
-    ALL.each do |k|
-      if k.include?(name) == true
-        return k
-      end
+    self.all.select do |customer|
+      customer.first_name == name
     end
   end
 
   def self.all_names
-
-
+    self.all.map do |customer|
+      customer.full_name
+    end
   end
 
-  def add_review(restaurant, content)
-    Review.new(content)
-    Review.restaurant = restaurant
-    Review.customer = self
+  def add_review(content, restaurant)
+    Review.new(content, self, restaurant)
   end
-
-
-
 end
-
 
 class Restaurant
   attr_accessor :name
@@ -80,16 +65,31 @@ class Restaurant
     end
   end
 
+  def reviews
+    Review.all.select do |review|
+      review.restaurant == self
+    end
+  end
+
+  def customers
+    Review.all.select do |review|
+      if review.restaurant == self
+        review.customer
+      end
+    end
+  end
+
 end
+
 
 class Review
   attr_accessor :content, :customer, :restaurant
 
   ALL = []
 
-  def initialize(content)
+  def initialize(content, customer, restaurant)
     @content = content
-    @customer = customer.full_name
+    @customer = customer
     @restaurant = restaurant
     ALL << self
   end
@@ -97,16 +97,4 @@ class Review
   def self.all
     ALL
   end
-
-  def customer
-    @customer
-  end
-
-  def restaurant
-    @restaurant
-  end
-
-
-
-
 end
