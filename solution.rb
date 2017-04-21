@@ -72,10 +72,8 @@ class Restaurant
   end
 
   def customers
-    Review.all.select do |review|
-      if review.restaurant == self
-        review.customer
-      end
+    reviews.map do |review|
+      review.customer
     end
   end
 
